@@ -2,7 +2,6 @@ const products = [];
 
 exports.getAddProduct = (req, res, next) => {
   res.render('add-product', {
-    products,
     pageTitle: 'Add Product',
     path: '/admin/add-product',
   });
