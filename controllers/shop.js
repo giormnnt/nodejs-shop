@@ -37,11 +37,6 @@ exports.getCart = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
   const { productId } = req.body;
-  // Product.findById(productId, product => {
-  //   Cart.addProduct(productId, product.price);
-  //   console.log('CONTROLLER SHOP');
-  //   console.log(productId);
-  // });
   Product.findById(productId, product => {
     Cart.addProduct(productId, product.price);
   });
