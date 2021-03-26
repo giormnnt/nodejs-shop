@@ -18,6 +18,15 @@ const shopRoutes = require('./routes/shop');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+  User.findByPk(1)
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(err => console.log(err));
+});
+
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
@@ -27,9 +36,18 @@ User.hasMany;
 app.use(errorController.get404);
 
 sequelize
-  .sync({ force: true })
-  .then(res => {
+  // .sync({ force: true })
+  .sync()
+  .then(result => {
+    return User.findByPk(1);
+  })
+  .then(user => {
+    if (!user) {
+      return User.create({ name: 'Gio', email: 'test@test.com' });
+    }
+    return user;
+  })
+  .then(user => {
     app.listen(3000);
   })
-
   .catch(err => console.log(err));
