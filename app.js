@@ -31,7 +31,7 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
 Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
-User.hasMany;
+User.hasMany(Product);
 
 app.use(errorController.get404);
 
