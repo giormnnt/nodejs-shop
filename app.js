@@ -7,6 +7,8 @@ const errorController = require('./controllers/404');
 const sequelize = require('./util/database');
 const Product = require('./models/product');
 const User = require('./models/user');
+const Cart = require('./models/cart');
+const CartItem = require('./models/cart-item');
 
 const app = express();
 
@@ -31,7 +33,11 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
 Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
-User.hasMany(Product);
+// User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
+// Cart.belongsTo(User);
 
 app.use(errorController.get404);
 
