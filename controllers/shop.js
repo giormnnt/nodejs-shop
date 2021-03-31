@@ -70,8 +70,6 @@ exports.postCart = (req, res, next) => {
       let product;
       if (products.length > 0) product = products[0];
       if (product) {
-        console.log('HELLO!!!');
-        console.log(product);
         const oldQuantity = product.cartItem.quantity;
         newQuantity = oldQuantity + 1;
         return product;
@@ -89,10 +87,18 @@ exports.postCart = (req, res, next) => {
 
 exports.postCartDeleteProduct = (req, res, next) => {
   const { productId } = req.body;
-  Product.findById(productId, product => {
-    Cart.deleteProduct(productId, product.price);
-    res.redirect('/cart');
-  });
+  req.user
+    .getCart()
+    .then(cart => {
+      return cart
+        .getProducts({ where: { id: productId } })
+        .then(products => {
+          const product = products[0];
+          return product.cartItem.destroy();
+        })
+        .then(result => res.redirect('/cart'));
+    })
+    .catch(err => console.log(err));
 };
 
 exports.getCheckout = (req, res, next) => {
