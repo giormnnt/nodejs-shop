@@ -12,6 +12,10 @@ block content
                     h2 Quantity: #{productData.cartItem.quantity}
                     form(action="/cart-delete-item", method="POST") 
                         input(type="hidden", name="productId", value=productData.id)
-                        button.btn.danger(type="submit") Delete 
+                        button.btn.danger(type="submit") Delete
+        hr
+        .centered
+            form(action="/create-order", method="POST")
+                button.btn(type="submit") Checkout
     else
         h1 No Products in Cart!
