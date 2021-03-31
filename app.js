@@ -32,8 +32,8 @@ app.use((req, res, next) => {
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
-Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
-// User.hasMany(Product);
+// Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+User.hasMany(Product, { constraints: true, onDelete: 'CASCADE' });
 User.hasOne(Cart);
 Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
