@@ -1,13 +1,17 @@
 extends ../layouts/main-layout.pug 
 
+block styles
+    link(rel="stylesheet", href="/css/cart.css")
+
 block content  
     if products.length > 0
-        ul 
+        ul.cart__item-list 
             each productData in products
-                li 
-                    p #{productData.title} (#{productData.cartItem.quantity})
+                li.cart__item 
+                    h1 #{productData.title} 
+                    h2 Quantiy: #{productData.cartItem.quantity}
                     form(action="/cart-delete-item", method="POST") 
                         input(type="hidden", name="productId", value=productData.id)
-                        button.btn(type="submit") Delete 
+                        button.btn.danger(type="submit") Delete 
     else
         h1 No Products in Cart!
