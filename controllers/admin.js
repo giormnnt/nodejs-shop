@@ -19,18 +19,17 @@ exports.postAddProduct = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
-// exports.getProductList = (req, res, next) => {
-//   req.user
-//     .getProducts()
-//     .then(products => {
-//       res.render('admin/product-list', {
-//         products,
-//         pageTitle: 'Admin Products',
-//         path: '/admin/product-list',
-//       });
-//     })
-//     .catch(err => console.log(err));
-// };
+exports.getProductList = (req, res, next) => {
+  Product.fetchAll()
+    .then(products => {
+      res.render('admin/product-list', {
+        products,
+        pageTitle: 'Admin Products',
+        path: '/admin/product-list',
+      });
+    })
+    .catch(err => console.log(err));
+};
 
 // exports.getEditProduct = (req, res, next) => {
 //   const { edit } = req.query;
