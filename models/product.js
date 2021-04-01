@@ -1,5 +1,5 @@
 const mongodb = require('mongodb');
-const { get } = require('../routes/admin');
+
 const { getDb } = require('../util/database');
 
 class Product {
