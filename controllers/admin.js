@@ -64,13 +64,12 @@ exports.postEditProduct = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
-// exports.postDeleteProduct = (req, res, next) => {
-//   const { productId } = req.body;
-//   Product.findByPk(productId)
-//     .then(product => product.destroy())
-//     .then(result => {
-//       console.log('DESTROYED PRODUCT');
-//       res.redirect('/admin/product-list');
-//     })
-//     .catch();
-// };
+exports.postDeleteProduct = (req, res, next) => {
+  const { productId } = req.body;
+  Product.deleteById(productId)
+    .then(() => {
+      console.log('DESTROYED PRODUCT');
+      res.redirect('/admin/product-list');
+    })
+    .catch();
+};

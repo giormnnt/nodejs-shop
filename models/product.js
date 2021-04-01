@@ -1,4 +1,5 @@
 const mongodb = require('mongodb');
+const { get } = require('../routes/admin');
 const { getDb } = require('../util/database');
 
 class Product {
@@ -7,7 +8,7 @@ class Product {
     this.imageUrl = imageUrl;
     this.price = price;
     this.description = description;
-    this._id = new mongodb.ObjectId(id);
+    this._id = new mongodb.ObjectID(id);
   }
 
   save() {
@@ -45,6 +46,17 @@ class Product {
       .next()
       .then(product => {
         return product;
+      })
+      .catch(err => console.log(err));
+  }
+
+  static deleteById(id) {
+    const db = getDb();
+    return db
+      .collection('products')
+      .deleteOne({ _id: new mongodb.ObjectID(id) })
+      .then(result => {
+        console.log('Deleted');
       })
       .catch(err => console.log(err));
   }
