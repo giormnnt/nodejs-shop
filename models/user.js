@@ -61,14 +61,29 @@ class User {
             ).quantity,
           };
         })
-      );
+      )
+      .catch(err => console.log(err));
   }
 
-  static findById(id) {
+  deleteItemFromCart(productId) {
+    const updatedCartItems = this.cart.items.filter(
+      item => item.productId.toString() !== productId.toString()
+    );
+
     const db = getDb();
     return db
       .collection('users')
-      .findOne({ _id: new ObjectID(id) })
+      .updateOne(
+        { _id: new ObjectID(this._id) },
+        { $set: { cart: { items: updatedCartItems } } }
+      );
+  }
+
+  static findById(userId) {
+    const db = getDb();
+    return db
+      .collection('users')
+      .findOne({ _id: new ObjectID(userId) })
       .then(user => {
         console.log(user);
         return user;
