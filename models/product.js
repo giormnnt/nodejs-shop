@@ -1,3 +1,30 @@
+const mongoose = require('mongoose');
+
+// * allows to create new schemas
+const { Schema } = mongoose;
+
+// * creates product schema.
+// * pass a js object and defines how your product looks like. pass a key and it needs a type.
+
+const productSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  imageUrl: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+});
+
 // const mongodb = require('mongodb');
 
 // const { getDb } = require('../util/database');
