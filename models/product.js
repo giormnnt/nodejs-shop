@@ -25,6 +25,10 @@ const productSchema = new Schema({
   },
 });
 
+// * mongoose.model connects a schema, blueprint with a name.
+// * mongoose takes model name as your collection name and it turns it all to lowercase and plural form.
+module.exports = mongoose.model('Product', productSchema);
+
 // const mongodb = require('mongodb');
 
 // const { getDb } = require('../util/database');
