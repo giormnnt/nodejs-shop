@@ -14,7 +14,7 @@ exports.postAddProduct = (req, res, next) => {
   // * pass one argument only and it is a javascript object where we map different values that were defined in schema. (ORDER does NOT matter)
   const product = new Product({ title, imageUrl, price, description });
   product
-    .save() // * save method comes from mongoose it saves data.
+    .save() // * save method comes from mongoose it saves data. if we call save to an existing object, it will not be saved as new one but the changes will be saved.
     .then(() => {
       res.redirect('/admin/product-list');
     })
@@ -22,7 +22,7 @@ exports.postAddProduct = (req, res, next) => {
 };
 
 exports.getProductList = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then(products => {
       res.render('admin/product-list', {
         products,
@@ -56,10 +56,17 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const { productId, title, imageUrl, price, description } = req.body;
-  const product = new Product(title, imageUrl, price, description, productId);
-  product
-    .save()
-    .then(result => {
+  Product.findById(productId)
+    .then(product => {
+      console.log('PRODUCT');
+      console.log(product);
+      product.title = title;
+      product.imageUrl = imageUrl;
+      product.price = price;
+      product.description = description;
+      return product.save(); // * updates the product
+    })
+    .then(() => {
       console.log('UPDATED PRODUCT!');
       res.redirect('/admin/product-list');
     })
