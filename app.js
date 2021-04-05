@@ -20,7 +20,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
   User.findById('606a66c4ebb3a60f9881a092')
     .then(user => {
-      console.log('helo');
       req.user = user; // * stores user model in request
       next();
     })

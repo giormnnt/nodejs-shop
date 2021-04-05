@@ -16,6 +16,7 @@ exports.getProductList = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const { productId } = req.params;
+
   // * findById is also a mongoose method. it also accepts string to find id and mongoose will automatically convert to an ObjectID
   Product.findById(productId)
     .then(product => {
@@ -41,9 +42,13 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
+  // * populate allows to tell mongoose to populate a certain field with all the detail information
+  // * populate does not return promise
   req.user
-    .getCart()
-    .then(products => {
+    .populate('cart.items.productId')
+    .execPopulate()
+    .then(user => {
+      const products = user.cart.items;
       res.render('shop/cart', {
         pageTitle: 'Your Cart',
         path: '/cart',
