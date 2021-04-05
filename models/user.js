@@ -14,7 +14,11 @@ const userSchema = new Schema({
   cart: {
     items: [
       {
-        productId: { type: Schema.Types.ObjectId, required: true }, // * this stores an ObjectId and stores a reference to a product.
+        productId: {
+          type: Schema.Types.ObjectId,
+          ref: 'Product', // * this stores an ObjectId and stores a reference to a product. ref takes a string. and pass the name of the model which you will relate to this.
+          required: true,
+        },
         quantity: { type: Number, required: true },
       },
     ],

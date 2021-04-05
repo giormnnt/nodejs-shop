@@ -11,8 +11,14 @@ exports.getAddProduct = (req, res, next) => {
 exports.postAddProduct = (req, res, next) => {
   // * gets the value of user inputted in the form
   const { title, imageUrl, price, description } = req.body;
-  // * pass one argument only and it is a javascript object where we map different values that were defined in schema. (ORDER does NOT matter)
-  const product = new Product({ title, imageUrl, price, description });
+  // * pass one argument only and it is a js object where we map different values that were defined in schema. (ORDER does NOT matter)
+  const product = new Product({
+    title,
+    imageUrl,
+    price,
+    description,
+    userId: req.user, // * same with storing using req.user._id
+  });
   product
     .save() // * save method comes from mongoose it saves data. if we call save to an existing object, it will not be saved as new one but the changes will be saved.
     .then(() => {
