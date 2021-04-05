@@ -74,10 +74,10 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.postDeleteProduct = (req, res, next) => {
+  // * deletes product
   const { productId } = req.body;
-  Product.deleteById(productId)
+  Product.findByIdAndDelete(productId)
     .then(() => {
-      console.log('DESTROYED PRODUCT');
       res.redirect('/admin/product-list');
     })
     .catch();
