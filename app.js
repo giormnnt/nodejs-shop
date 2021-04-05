@@ -34,7 +34,8 @@ app.use(errorController.get404);
 // * connects to mongodb cloud
 mongoose
   .connect(
-    'mongodb+srv://Giovanni:npsssYf5cEvNEhRb@cluster0.dxeqa.mongodb.net/shop?retryWrites=true&w=majority'
+    'mongodb+srv://Giovanni:npsssYf5cEvNEhRb@cluster0.dxeqa.mongodb.net/shop?retryWrites=true&w=majority',
+    { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(result => {
     app.listen(3000);
