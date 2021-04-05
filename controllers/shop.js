@@ -1,7 +1,9 @@
 const Product = require('../models/product');
 
 exports.getProductList = (req, res, next) => {
-  Product.fetchAll()
+  // * find method does not give cursor, it gives us products.
+  // * if query large amounts of date turn this into cursor. (Products.find().cursor().next() or manipulate find to limit the set of data that is retrieved)
+  Product.find()
     .then(products => {
       res.render('shop/product-list', {
         products,
@@ -14,6 +16,7 @@ exports.getProductList = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const { productId } = req.params;
+  // * findById is also a mongoose method. it also accepts string to find id and mongoose will automatically convert to an ObjectID
   Product.findById(productId)
     .then(product => {
       res.render('shop/product-detail', {
@@ -26,7 +29,7 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then(products => {
       res.render('shop/index', {
         products,
