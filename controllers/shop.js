@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Order = require('../models/order');
 
 exports.getProductList = (req, res, next) => {
   // * find method does not give cursor, it gives us products.
@@ -89,9 +90,23 @@ exports.getOrders = (req, res, next) => {
 };
 
 exports.postOrder = (req, res, next) => {
-  let fetchedCart;
   req.user
-    .addOrder()
+    .populate('cart.items.productId')
+    .execPopulate()
+    .then(user => {
+      // * returns user.cart.items.quantity & user.cart.items.productId
+      const products = user.cart.items.map(item => {
+        return { quantity: item.quantity, product: item.productId };
+      });
+      const order = new Order({
+        user: {
+          name: req.user.name,
+          userId: req.user,
+        },
+        products,
+      });
+      return order.save();
+    })
     .then(() => {
       res.redirect('/orders');
     })
