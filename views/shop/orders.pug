@@ -4,6 +4,7 @@ block styles
     link(rel="stylesheet", href="/css/orders.css")
 
 block content 
+    - var total = 0;
     if orders.length > 0
         ul.orders
             each order in orders
@@ -11,7 +12,10 @@ block content
                     h1 Order# #{order._id }
                     ul.orders__products 
                         each p in order.products
-                            li.orders__products-item #{p.product.title} (#{p.quantity})
+                            li.orders__products-item #{p.product.title} (#{p.quantity}) $#{p.product.price * p.quantity} 
+                            - total += (p.product.price * p.quantity)
+            h1 TOTAL
+                h3 $#{total}
     else 
         h1 Nothing there...
     
