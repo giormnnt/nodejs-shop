@@ -5,7 +5,7 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
-    isAuthenticated: req.isLoggedin,
+    isAuthenticated: req.session.isLoggedin,
   });
 };
 
@@ -18,7 +18,7 @@ exports.postAddProduct = (req, res, next) => {
     imageUrl,
     price,
     description,
-    userId: req.user, // * same with storing using req.user._id
+    userId: req.session.user, // * same with storing using req.user._id
   });
   product
     .save() // * save method comes from mongoose it saves data. if we call save to an existing object, it will not be saved as new one but the changes will be saved.
@@ -35,7 +35,7 @@ exports.getProductList = (req, res, next) => {
         products,
         pageTitle: 'Admin Products',
         path: '/admin/product-list',
-        isAuthenticated: req.isLoggedin,
+        isAuthenticated: req.session.isLoggedin,
       });
     })
     .catch(err => console.log(err));
@@ -57,7 +57,7 @@ exports.getEditProduct = (req, res, next) => {
         path: '/admin/edit-product',
         editing: edit,
         product,
-        isAuthenticated: req.isLoggedin,
+        isAuthenticated: req.session.isLoggedin,
       });
     })
     .catch(err => console.log(err));
