@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session');
 
 const errorController = require('./controllers/404');
 const User = require('./models/user');
@@ -17,6 +18,12 @@ const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+// * secret is used for signing the hash which secretly stores ID in the cookie.
+// * resave means that the session will not be saved on every request that is done but only if there is something changed in the session.
+// * saveUninitialized ensures that no session gets saved for a request where it doesnt need to be saved
+app.use(
+  session({ secret: 'this is secret', resave: false, saveUninitialized: false })
+);
 
 app.use((req, res, next) => {
   User.findById('606a66c4ebb3a60f9881a092')
