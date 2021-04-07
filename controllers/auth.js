@@ -9,6 +9,10 @@ exports.getLogin = (req, res, next) => {
 
 exports.postLogin = (req, res, next) => {
   // * Setting cookies
-  res.setHeader('Set-Cookie', 'loggedIn=true');
+  // * Expires has its own data format.
+  // * Max-Age is set on seconds.
+  // * Secure can only be accessed the website is on https.
+  // * HttpOnly can't access the cookie value through client side js.
+  res.setHeader('Set-Cookie', 'loggedIn=true; HttpOnly');
   res.redirect('/');
 };
