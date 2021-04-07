@@ -1,18 +1,14 @@
 exports.getLogin = (req, res, next) => {
-  const isLoggedIn = req.get('Cookie').split('=')[1] === 'true';
+  // const isLoggedIn = req.get('Cookie').split('=')[1] === 'true';
+  console.log(req.session.isLoggedIn);
   res.render('auth/login', {
     pageTitle: 'Login',
     path: '/login',
-    isAuthenticated: isLoggedIn,
+    isAuthenticated: false,
   });
 };
 
 exports.postLogin = (req, res, next) => {
-  // * Setting cookies
-  // * Expires has its own data format.
-  // * Max-Age is set on seconds.
-  // * Secure can only be accessed the website is on https.
-  // * HttpOnly can't access the cookie value through client side js.
-  res.setHeader('Set-Cookie', 'loggedIn=true; HttpOnly');
+  req.session.isLoggedIn = true;
   res.redirect('/');
 };
