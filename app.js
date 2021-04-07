@@ -4,11 +4,19 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 const errorController = require('./controllers/404');
 const User = require('./models/user');
 
+const MONGODB_URI =
+  'mongodb+srv://Giovanni:npsssYf5cEvNEhRb@cluster0.dxeqa.mongodb.net/shop?retryWrites=true&w=majority';
+
 const app = express();
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'sessions',
+});
 
 app.set('view engine', 'pug');
 
@@ -22,7 +30,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 // * resave means that the session will not be saved on every request that is done but only if there is something changed in the session.
 // * saveUninitialized ensures that no session gets saved for a request where it doesnt need to be saved
 app.use(
-  session({ secret: 'this is secret', resave: false, saveUninitialized: false })
+  session({
+    secret: 'this is secret',
+    resave: false,
+    saveUninitialized: false,
+    store,
+  })
 );
 
 app.use((req, res, next) => {
@@ -41,10 +54,7 @@ app.use(errorController.get404);
 
 // * connects to mongodb cloud
 mongoose
-  .connect(
-    'mongodb+srv://Giovanni:npsssYf5cEvNEhRb@cluster0.dxeqa.mongodb.net/shop?retryWrites=true&w=majority',
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  )
+  .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     // * creates new user if there's NO user.
     // * returns the first user it finds
