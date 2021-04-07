@@ -18,7 +18,7 @@ exports.postAddProduct = (req, res, next) => {
     imageUrl,
     price,
     description,
-    userId: req.session.user, // * same with storing using req.user._id
+    userId: req.user, // * same with storing using req.user._id
   });
   product
     .save() // * save method comes from mongoose it saves data. if we call save to an existing object, it will not be saved as new one but the changes will be saved.

@@ -39,7 +39,8 @@ app.use(
 );
 
 app.use((req, res, next) => {
-  User.findById('606a66c4ebb3a60f9881a092')
+  if (!req.session.user) return next();
+  User.findById(req.session.user._id)
     .then(user => {
       req.user = user; // * stores user model in request
       next();
