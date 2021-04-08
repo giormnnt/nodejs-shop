@@ -3,16 +3,25 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 exports.getLogin = (req, res, next) => {
+  let message = req.flash('error');
+  if (message.length > 0) message = message[0];
+  else message = null;
   res.render('auth/login', {
     pageTitle: 'Login',
     path: '/login',
+    // * retrieves the error key that was set and then removed from the session.
+    errorMessage: message,
   });
 };
 
 exports.getSignup = (req, res, next) => {
+  let message = req.flash('error');
+  if (message.length > 0) message = message[0];
+  else message = null;
   res.render('auth/signup', {
     path: '/signup',
     pageTitle: 'Signup',
+    errorMessage: message,
   });
 };
 
@@ -21,6 +30,9 @@ exports.postLogin = (req, res, next) => {
   User.findOne({ email })
     .then(user => {
       if (!user) {
+        // * display error when there is no existing email.
+        // * flash takes a key under which message will be stored.
+        req.flash('error', 'Invalid email or password.');
         return res.redirect('/login');
       }
       bcrypt
@@ -31,6 +43,7 @@ exports.postLogin = (req, res, next) => {
             req.session.user = user;
             return req.session.save(() => res.redirect('/'));
           }
+          req.flash('error', 'Invalid email or password.');
           res.redirect('/login');
         })
         .catch(err => {
@@ -46,6 +59,7 @@ exports.postSignup = (req, res, next) => {
   User.findOne({ email })
     .then(userDoc => {
       if (userDoc) {
+        req.flash('error', 'E-mail already exists');
         return res.redirect('/signup');
       }
       return bcrypt
