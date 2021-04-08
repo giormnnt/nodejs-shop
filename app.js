@@ -57,21 +57,6 @@ app.use(errorController.get404);
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    // * creates new user if there's NO user.
-    // * returns the first user it finds
-    User.findOne().then(user => {
-      if (!user) {
-        const user = new User({
-          name: 'Gio',
-          email: 'gio@test.com',
-          cart: {
-            items: [],
-          },
-        });
-        user.save();
-      }
-    });
-
     app.listen(3000);
   })
   .catch(err => console.log(err));
