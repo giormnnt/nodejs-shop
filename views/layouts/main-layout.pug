@@ -10,7 +10,7 @@ html(lang="en")
     body
         .backdrop 
         header.main-header 
-            .button#side-menu-toggle Menu 
+            button#side-menu-toggle Menu 
             nav.main-header__nav
                 ul.main-header__item-list
                     li.main-header__item 
@@ -30,6 +30,8 @@ html(lang="en")
                     if !isAuthenticated
                         li.main-header__item 
                             a(href="/login",  class=(path==='/login' ? 'active' : '')) Login 
+                        li.main-header__item 
+                            a(href="/signup",  class=(path==='/signup' ? 'active' : '')) Signup 
                     else 
                         li.main-header__item
                             form(action="/logout", method="post") 
@@ -49,12 +51,13 @@ html(lang="en")
                         a(href="/admin/add-product", class=(path==='/admin/add-product' ? 'active' : '')) Add Product
                     li.mobile-nav__item 
                         a(href="/admin/product-list", class=(path==='/admin/product-list' ? 'active' : '')) Admin Products
-            ul.mobile-header__item-list
                 if !isAuthenticated
-                    li.mobile-header__item 
+                    li.mobile-nav__item 
                         a(href="/login",  class=(path==='/login' ? 'active' : '')) Login 
+                    li.mobile-nav__item 
+                        a(href="/signup",  class=(path==='/signup' ? 'active' : '')) Signup 
                 else 
-                    li.mobile-header__item
+                    li.mobile-nav__item
                         form(action="/logout", method="post") 
                             button(type="submit") Logout
         block content
