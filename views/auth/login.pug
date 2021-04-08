@@ -12,7 +12,8 @@ block content
                 input#email(type="email", name="email")   
             .form-control
                 label(for="password") Password
-                input#password(type="password", name="password")
+                input#password(type="password", name="password") 
+            input(type="hidden", name="_csrf", value=csrfToken)
             button.btn(type="submit") Login
 
 
