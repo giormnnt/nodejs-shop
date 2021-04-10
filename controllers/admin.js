@@ -28,7 +28,7 @@ exports.postAddProduct = (req, res, next) => {
 };
 
 exports.getProductList = (req, res, next) => {
-  Product.find()
+  Product.find({ userId: req.user._id })
     .then(products => {
       res.render('admin/product-list', {
         products,
@@ -64,8 +64,6 @@ exports.postEditProduct = (req, res, next) => {
   const { productId, title, imageUrl, price, description } = req.body;
   Product.findById(productId)
     .then(product => {
-      console.log('PRODUCT');
-      console.log(product);
       product.title = title;
       product.imageUrl = imageUrl;
       product.price = price;
