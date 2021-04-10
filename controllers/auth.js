@@ -153,3 +153,28 @@ exports.postReset = (req, res, next) => {
       .catch(err => console.log(err));
   });
 };
+
+exports.getResetPassword = (req, res, next) => {
+  const { token } = req.params;
+  // * $gt stands for greater than
+  User.findOne({
+    resetToken: token,
+    resetTokenExpiration: { $gt: Date.now() },
+  })
+    .then(user => {
+      if (!user) {
+        req.flash('error', 'Token Expired!');
+        return res.redirect('/reset');
+      }
+      let message = req.flash('error');
+      if (message.length > 0) message = message[0];
+      else message = null;
+      res.render('auth/reset-password', {
+        path: '/reset-passwors',
+        pageTitle: 'Reset Password',
+        errorMessage: message,
+        userId: user._id.toString(),
+      });
+    })
+    .catch(err => console.log(err));
+};
