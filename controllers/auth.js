@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
@@ -111,5 +113,43 @@ exports.getReset = (req, res, next) => {
     path: '/reset',
     pageTitle: 'Change Password',
     errorMessage: message,
+  });
+};
+
+exports.postReset = (req, res, next) => {
+  const { email } = req.body;
+  // * creates 32 bytes
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log(err);
+      return res.redirect('/reset');
+    }
+    // * generates token
+    const token = buffer.toString('hex');
+    User.findOne({ email })
+      .then(user => {
+        if (!user) {
+          req.flash('error', 'Email does not exist');
+          return res.redirect('/reset');
+        }
+        const date = new Date();
+        user.resetToken = token;
+        user.resetTokenExpiration = Date.now() + 900000;
+        user.save();
+      })
+      .then(() => {
+        res.redirect('/');
+        transporter.sendMail({
+          to: email,
+          from: 'cochehe50@gmail.com',
+          subject: 'Change Password',
+          html: `
+          <p>You requested a password reset</p>
+          <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password.</p>
+          <p>This will expire in 15 minutes</p>
+          `,
+        });
+      })
+      .catch(err => console.log(err));
   });
 };
