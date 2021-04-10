@@ -132,7 +132,6 @@ exports.postReset = (req, res, next) => {
           req.flash('error', 'Email does not exist');
           return res.redirect('/reset');
         }
-        const date = new Date();
         user.resetToken = token;
         user.resetTokenExpiration = Date.now() + 900000;
         user.save();
