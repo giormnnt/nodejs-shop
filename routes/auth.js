@@ -17,7 +17,7 @@ router.get(
   authController.getResetPassword
 );
 
-router.post('/login', isAuth.isNotLoggedIn, authController.postLogin);
+router.post('/login', authController.postLogin);
 
 router.post('/signup', isAuth.isNotLoggedIn, authController.postSignup);
 
