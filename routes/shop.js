@@ -11,14 +11,18 @@ router.get('/products', shopController.getProductList);
 
 router.get('/products/:productId', shopController.getProduct);
 
-router.get('/cart', isAuth, shopController.getCart);
+router.get('/cart', isAuth.isLoggedIn, shopController.getCart);
 
-router.post('/cart', isAuth, shopController.postCart);
+router.post('/cart', isAuth.isLoggedIn, shopController.postCart);
 
-router.post('/cart-delete-item', isAuth, shopController.postCartDeleteProduct);
+router.post(
+  '/cart-delete-item',
+  isAuth.isLoggedIn,
+  shopController.postCartDeleteProduct
+);
 
-router.post('/create-order', isAuth, shopController.postOrder);
+router.post('/create-order', isAuth.isLoggedIn, shopController.postOrder);
 
-router.get('/orders', isAuth, shopController.getOrders);
+router.get('/orders', isAuth.isLoggedIn, shopController.getOrders);
 
 module.exports = router;
