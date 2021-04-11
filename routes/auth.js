@@ -1,5 +1,5 @@
 const express = require('express');
-const { check } = require('express-validator');
+const { check, body } = require('express-validator');
 
 const authController = require('../controllers/auth');
 const isAuth = require('../middleware/is-auth');
@@ -23,15 +23,23 @@ router.post('/login', authController.postLogin);
 router.post(
   '/signup',
   isAuth.isNotLoggedIn,
-  check('email')
-    .isEmail()
-    .withMessage('Please enter a valid email.')
-    .custom((value, { req }) => {
-      if (value === 'test@test.com') {
-        throw new Error('This email address is forbidden');
-      }
-      return true;
-    }),
+  [
+    check('email')
+      .isEmail()
+      .withMessage('Please enter a valid email.')
+      .custom((value, { req }) => {
+        if (value === 'test@test.com') {
+          throw new Error('This email address is forbidden');
+        }
+        return true;
+      }),
+    body(
+      'password',
+      'Please enter a password with only text, numbers and at least 8 characters'
+    )
+      .isLength({ min: 8 })
+      .isAlphanumeric(),
+  ],
   authController.postSignup
 );
 
