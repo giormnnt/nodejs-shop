@@ -23,7 +23,7 @@ router.post('/login', authController.postLogin);
 router.post(
   '/signup',
   isAuth.isNotLoggedIn,
-  check('email').isEmail(),
+  check('email').isEmail().withMessage('Please enter a valid email.'),
   authController.postSignup
 );
 
