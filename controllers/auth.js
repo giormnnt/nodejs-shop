@@ -3,9 +3,9 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
+const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
-const { reset } = require('nodemon');
 
 const transporter = nodemailer.createTransport(
   sendgridTransport({
@@ -70,6 +70,16 @@ exports.postLogin = (req, res, next) => {
 
 exports.postSignup = (req, res, next) => {
   const { email, password, confirmPassword } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    // * 422 is a common status code for indicating that validation failed, it will still send a response just with a different status code.
+    return res.status(422).render('auth/signup', {
+      path: '/signup',
+      pageTitle: 'Signup',
+      errorMessage: errors.array(), // * returns array of error
+    });
+  }
   User.findOne({ email })
     .then(userDoc => {
       if (userDoc) {
