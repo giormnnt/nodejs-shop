@@ -69,7 +69,7 @@ exports.postLogin = (req, res, next) => {
 };
 
 exports.postSignup = (req, res, next) => {
-  const { email, password, confirmPassword } = req.body;
+  const { email, password } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors.array());
@@ -80,32 +80,25 @@ exports.postSignup = (req, res, next) => {
       errorMessage: errors.array()[0].msg, // * returns array of error
     });
   }
-  User.findOne({ email })
-    .then(userDoc => {
-      if (userDoc) {
-        req.flash('error', 'E-mail already exists');
-        return res.redirect('/signup');
-      }
-      return bcrypt
-        .hash(password, 12)
-        .then(password => {
-          const user = new User({
-            email,
-            password,
-            cart: { items: [] },
-          });
-          return user.save();
-        })
-        .then(() => {
-          res.redirect('/login');
-          return transporter.sendMail({
-            to: email,
-            from: 'cochehe50@gmail.com',
-            subject: 'Confirm your Email',
-            html: '<h1>You successfully signed up!</h1>',
-          });
-        })
-        .catch(err => console.log(err));
+
+  bcrypt
+    .hash(password, 12)
+    .then(password => {
+      const user = new User({
+        email,
+        password,
+        cart: { items: [] },
+      });
+      return user.save();
+    })
+    .then(() => {
+      res.redirect('/login');
+      return transporter.sendMail({
+        to: email,
+        from: 'cochehe50@gmail.com',
+        subject: 'Confirm your Email',
+        html: '<h1>You successfully signed up!</h1>',
+      });
     })
     .catch(err => console.log(err));
 };
