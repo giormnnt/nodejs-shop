@@ -41,6 +41,16 @@ exports.getSignup = (req, res, next) => {
 
 exports.postLogin = (req, res, next) => {
   const { email, password } = req.body;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render('auth/login', {
+      path: '/login',
+      pageTitle: 'Login',
+      errorMessage: errors.array()[0].msg,
+    });
+  }
+
   User.findOne({ email })
     .then(user => {
       if (!user) {
@@ -72,7 +82,6 @@ exports.postSignup = (req, res, next) => {
   const { email, password } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log(errors.array());
     // * 422 is a common status code for indicating that validation failed, it will still send a response just with a different status code.
     return res.status(422).render('auth/signup', {
       path: '/signup',
