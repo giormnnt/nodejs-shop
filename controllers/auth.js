@@ -25,6 +25,8 @@ exports.getLogin = (req, res, next) => {
     path: '/login',
     // * retrieves the error key that was set and then removed from the session.
     errorMessage: message,
+    oldInput: { email: '', password: '' },
+    validationErrors: [],
   });
 };
 
@@ -50,6 +52,8 @@ exports.postLogin = (req, res, next) => {
       pageTitle: 'Login',
       path: '/login',
       errorMessage: errors.array()[0].msg,
+      oldInput: { email, password },
+      validationErrors: errors.array(),
     });
   }
 
@@ -58,8 +62,13 @@ exports.postLogin = (req, res, next) => {
       if (!user) {
         // * display error when there is no existing email.
         // * flash takes a key under which message will be stored.
-        req.flash('error', 'Invalid email or password.');
-        return res.redirect('/login');
+        return res.status(422).render('auth/login', {
+          pageTitle: 'Login',
+          path: '/login',
+          errorMessage: 'Invalid email or password.',
+          oldInput: { email, password },
+          validationErrors: [],
+        });
       }
       bcrypt
         .compare(password, user.password)
@@ -69,8 +78,13 @@ exports.postLogin = (req, res, next) => {
             req.session.user = user;
             return req.session.save(() => res.redirect('/'));
           }
-          req.flash('error', 'Invalid email or password.');
-          res.redirect('/login');
+          return res.status(422).render('auth/login', {
+            pageTitle: 'Login',
+            path: '/login',
+            errorMessage: 'Invalid email or password.',
+            oldInput: { email, password },
+            validationErrors: [],
+          });
         })
         .catch(err => {
           console.log(err);
@@ -81,7 +95,7 @@ exports.postLogin = (req, res, next) => {
 };
 
 exports.postSignup = (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password, confirmPassword } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     // * 422 is a common status code for indicating that validation failed, it will still send a response just with a different status code.
@@ -89,7 +103,7 @@ exports.postSignup = (req, res, next) => {
       path: '/signup',
       pageTitle: 'Signup',
       errorMessage: errors.array()[0].msg, // * returns array of error
-      oldInput: { email, password, confirmPassword: req.body.confirmPassword },
+      oldInput: { email, password, confirmPassword },
       validationErrors: errors.array(),
     });
   }
