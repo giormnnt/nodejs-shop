@@ -11,13 +11,13 @@ block content
         form.login-form(action="/signup", method="POST" novalidate)
             .form-control
                 label(for="email") E-mail
-                input#email(type="email", name="email" value=oldInput.email)   
+                input#email(class=`${validationErrors.find(err => err.param === 'email') ? 'invalid': ''}`, type="email", name="email" value=oldInput.email)   
             .form-control
                 label(for="password") Password
-                input#password(type="password", name="password" value=oldInput.password)
+                input#password(class=`${validationErrors.find(err => err.param === 'password') ? 'invalid': ''}`,type="password", name="password" value=oldInput.password)
             .form-control
                 label(for="password") Confirm Password
-                input#confirmPassword(type="password", name="confirmPassword" value=oldInput.confirmPassword)
+                input#confirmPassword(class=`${validationErrors.find(err => err.param === 'confirmPassword') ? 'invalid': ''}`,type="password", name="confirmPassword" value=oldInput.confirmPassword)
             input(type="hidden", name="_csrf", value=csrfToken)
             button.btn(type="submit") Sign Up
 
