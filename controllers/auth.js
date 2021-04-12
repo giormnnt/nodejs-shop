@@ -36,6 +36,11 @@ exports.getSignup = (req, res, next) => {
     path: '/signup',
     pageTitle: 'Signup',
     errorMessage: message,
+    oldInput: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
 };
 
@@ -45,8 +50,8 @@ exports.postLogin = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).render('auth/login', {
-      path: '/login',
       pageTitle: 'Login',
+      path: '/login',
       errorMessage: errors.array()[0].msg,
     });
   }
@@ -87,6 +92,7 @@ exports.postSignup = (req, res, next) => {
       path: '/signup',
       pageTitle: 'Signup',
       errorMessage: errors.array()[0].msg, // * returns array of error
+      oldInput: { email, password, confirmPassword: req.body.confirmPassword },
     });
   }
 
