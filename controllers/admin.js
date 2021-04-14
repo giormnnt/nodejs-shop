@@ -126,7 +126,7 @@ exports.postEditProduct = (req, res, next) => {
 exports.postDeleteProduct = (req, res, next) => {
   // * deletes product
   const { productId } = req.body;
-  Product.deleteOne({ id: productId, userId: req.user._id })
+  Product.deleteOne({ _id: productId, userId: req.user._id })
     .then(() => {
       res.redirect('/admin/product-list');
     })
