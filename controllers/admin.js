@@ -1,3 +1,5 @@
+const { validationResult } = require('express-validator');
+
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
@@ -5,12 +7,30 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
+    hasError: false,
+    errorMessage: null,
   });
 };
 
 exports.postAddProduct = (req, res, next) => {
   // * gets the value of user inputted in the form
   const { title, imageUrl, price, description } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add Product',
+      path: '/admin/edit-product',
+      editing: false,
+      hasError: true,
+      product: {
+        title: title,
+        imageUrl: imageUrl,
+        price: price,
+        description: description,
+      },
+      errorMessage: errors.array()[0].msg,
+    });
+  }
   // * pass one argument only and it is a js object where we map different values that were defined in schema. (ORDER does NOT matter)
   const product = new Product({
     title,
@@ -55,6 +75,8 @@ exports.getEditProduct = (req, res, next) => {
         path: '/admin/edit-product',
         editing: edit,
         product,
+        hasError: false,
+        errorMessage: null,
       });
     })
     .catch(err => console.log(err));
