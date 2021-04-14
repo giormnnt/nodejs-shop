@@ -18,15 +18,16 @@ router.post(
   [
     body('title')
       .isString()
-      .withMessage('Special characters are not allowed')
       .isLength({ min: 3 })
       .withMessage('Title should have minimum of 3 characters')
       .trim(),
-    body('imageUrl').isURL().withMessage('Not a valid URL'),
-    body('price').isFloat().withMessage('Enter at least two decimals'),
+    body('imageUrl').isURL().withMessage('Image URL is not a valid URL'),
+    body('price').isFloat().withMessage('Price needs at least two decimals'),
     body('description')
       .isLength({ min: 5, max: 400 })
-      .withMessage('Minumum of 3 characters and maximum of 400 characters only')
+      .withMessage(
+        'Description should have minumum of 3 characters and maximum of 400 characters only'
+      )
       .trim(),
   ],
   isAuth.isLoggedIn,
@@ -43,16 +44,17 @@ router.post(
   '/edit-product',
   [
     body('title')
-      .isAlphanumeric()
-      .withMessage('Special characters are not allowed')
+      .isString()
       .isLength({ min: 3 })
       .withMessage('Title should have minimum of 3 characters')
       .trim(),
-    body('imageUrl').isURL().withMessage('Not a valid URL'),
-    body('price').isFloat().withMessage('Enter at least two decimals'),
+    body('imageUrl').isURL().withMessage('Image URL is not a valid URL'),
+    body('price').isFloat().withMessage('Price needs at least two decimals'),
     body('description')
       .isLength({ min: 5, max: 400 })
-      .withMessage('Minumum of 3 characters and maximum of 400 characters only')
+      .withMessage(
+        'Description should have minumum of 3 characters and maximum of 400 characters only'
+      )
       .trim(),
   ],
   isAuth.isLoggedIn,

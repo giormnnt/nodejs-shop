@@ -9,6 +9,7 @@ exports.getAddProduct = (req, res, next) => {
     editing: false,
     hasError: false,
     errorMessage: null,
+    validationErrors: [],
   });
 };
 
@@ -23,12 +24,13 @@ exports.postAddProduct = (req, res, next) => {
       editing: false,
       hasError: true,
       product: {
-        title: title,
-        imageUrl: imageUrl,
-        price: price,
-        description: description,
+        title,
+        imageUrl,
+        price,
+        description,
       },
       errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
     });
   }
   // * pass one argument only and it is a js object where we map different values that were defined in schema. (ORDER does NOT matter)
@@ -77,6 +79,7 @@ exports.getEditProduct = (req, res, next) => {
         product,
         hasError: false,
         errorMessage: null,
+        validationErrors: [],
       });
     })
     .catch(err => console.log(err));
@@ -84,6 +87,25 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const { productId, title, imageUrl, price, description } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Edit Product',
+      path: '/admin/edit-product',
+      editing: true,
+      hasError: true,
+      product: {
+        title,
+        imageUrl,
+        price,
+        description,
+        _id: productId,
+      },
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
+    });
+  }
+
   Product.findById(productId)
     .then(product => {
       if (product.userId.toString() !== req.user._id.toString()) {
