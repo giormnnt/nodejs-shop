@@ -21,7 +21,8 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   // * gets the value of user inputted in the form
-  const { title, image, price, description } = req.body;
+  const { title, price, description } = req.body;
+  const image = req.file;
   console.log(image);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
