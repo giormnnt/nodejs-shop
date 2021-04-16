@@ -8,7 +8,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
 
-const errorController = require('./controllers/404');
+const errorController = require('./controllers/error');
 const User = require('./models/user');
 
 const MONGODB_URI =
@@ -69,6 +69,9 @@ app.use((req, res, next) => {
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
+
+app.get('/500', errorController.get500);
+
 app.use(errorController.get404);
 
 // * connects to mongodb cloud
