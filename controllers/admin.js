@@ -21,7 +21,8 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   // * gets the value of user inputted in the form
-  const { title, imageUrl, price, description } = req.body;
+  const { title, image, price, description } = req.body;
+  console.log(image);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).render('admin/edit-product', {
@@ -31,7 +32,7 @@ exports.postAddProduct = (req, res, next) => {
       hasError: true,
       product: {
         title,
-        imageUrl,
+        image,
         price,
         description,
       },
