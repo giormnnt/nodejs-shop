@@ -4,6 +4,12 @@ const { validationResult } = require('express-validator');
 
 const Product = require('../models/product');
 
+const error500 = (err, next) => {
+  const error = new Error(err);
+  error.httpStatusCode = 500;
+  return next(error);
+};
+
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
@@ -50,21 +56,7 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect('/admin/product-list');
     })
     .catch(err => {
-      // return res.status(500).render('admin/edit-product', {
-      //   pageTitle: 'Add Product',
-      //   path: '/admin/add-product',
-      //   editing: false,
-      //   hasError: true,
-      //   product: {
-      //     title,
-      //     imageUrl,
-      //     price,
-      //     description,
-      //   },
-      //   errorMessage: 'Database operation failed, please try again.',
-      //   validationErrors: [],
-      // });
-      res.redirect('/500');
+      error500(err, next);
     });
 };
 
@@ -101,7 +93,9 @@ exports.getEditProduct = (req, res, next) => {
         validationErrors: [],
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      error500(err, next);
+    });
 };
 
 exports.postEditProduct = (req, res, next) => {
