@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 const { validationResult } = require('express-validator');
 
 const Product = require('../models/product');
@@ -43,7 +41,6 @@ exports.postAddProduct = (req, res, next) => {
   }
   // * pass one argument only and it is a js object where we map different values that were defined in schema. (ORDER does NOT matter)
   const product = new Product({
-    _id: mongoose.Types.ObjectId('60787993204b870ccc531712'),
     title,
     imageUrl,
     price,
@@ -69,7 +66,9 @@ exports.getProductList = (req, res, next) => {
         path: '/admin/product-list',
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      error500(err, next);
+    });
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -133,7 +132,9 @@ exports.postEditProduct = (req, res, next) => {
       }); // * updates the product
     })
 
-    .catch(err => console.log(err));
+    .catch(err => {
+      error500(err, next);
+    });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -143,5 +144,7 @@ exports.postDeleteProduct = (req, res, next) => {
     .then(() => {
       res.redirect('/admin/product-list');
     })
-    .catch();
+    .catch(err => {
+      error500(err, next);
+    });
 };

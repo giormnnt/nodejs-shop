@@ -16,6 +16,12 @@ const transporter = nodemailer.createTransport(
   })
 );
 
+const error500 = (err, next) => {
+  const error = new Error(err);
+  error.httpStatusCode = 500;
+  return next(error);
+};
+
 exports.getLogin = (req, res, next) => {
   let message = req.flash('error');
   if (message.length > 0) message = message[0];
@@ -91,7 +97,9 @@ exports.postLogin = (req, res, next) => {
           res.redirect('/login');
         });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      error500(err, next);
+    });
 };
 
 exports.postSignup = (req, res, next) => {
@@ -127,7 +135,9 @@ exports.postSignup = (req, res, next) => {
         html: '<h1>You successfully signed up!</h1>',
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      error500(err, next);
+    });
 };
 
 exports.postLogout = (req, res, next) => {
@@ -180,7 +190,9 @@ exports.postReset = (req, res, next) => {
           `,
         });
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        error500(err, next);
+      });
   });
 };
 
@@ -207,7 +219,9 @@ exports.getResetPassword = (req, res, next) => {
         passwordToken: token,
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      error500(err, next);
+    });
 };
 
 exports.postResetPassword = (req, res, next) => {
@@ -236,5 +250,7 @@ exports.postResetPassword = (req, res, next) => {
     .then(() => {
       res.redirect('/login');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      error500(err, next);
+    });
 };
