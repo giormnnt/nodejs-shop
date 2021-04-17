@@ -162,8 +162,22 @@ exports.getInvoice = (req, res, next) => {
       pdfDoc.pipe(fs.createWriteStream(invoicePath));
       pdfDoc.pipe(res);
 
-      // * adds single line of text into the pdf document.
-      pdfDoc.text('Hello World');
+      pdfDoc.fontSize(26).text('Invoice', {
+        underline: true,
+      });
+
+      pdfDoc.text('----------------------');
+      let total = 0;
+      order.products.forEach(prod => {
+        total += prod.quantity * prod.product.price;
+        pdfDoc
+          .fontSize(14)
+          .text(
+            `${prod.product.title} - ${prod.quantity} x $${prod.product.price}`
+          );
+      });
+      pdfDoc.text('----------');
+      pdfDoc.fontSize(20).text(`Total Price: ${total}`);
 
       // * writable streams for creating the file and for sending the response will be closed.
       pdfDoc.end();
