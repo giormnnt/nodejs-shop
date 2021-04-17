@@ -18,5 +18,8 @@ block content
                             p.product__description #{product.description}
                         .card__actions
                             include ../includes/cart.pug
+            section.pagination 
+                a(href="/?page=1") 1 
+                a(href="/?page=2") 2 
         else
             h1 No Products                                    
