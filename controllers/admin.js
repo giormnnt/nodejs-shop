@@ -23,7 +23,21 @@ exports.postAddProduct = (req, res, next) => {
   // * gets the value of user inputted in the form
   const { title, price, description } = req.body;
   const image = req.file;
-  console.log(image);
+  if (!image) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add Product',
+      path: '/admin/add-product',
+      editing: false,
+      hasError: true,
+      product: {
+        title,
+        price,
+        description,
+      },
+      errorMessage: 'Attached file is not an image',
+      validationErrors: [],
+    });
+  }
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).render('admin/edit-product', {
@@ -41,6 +55,8 @@ exports.postAddProduct = (req, res, next) => {
       validationErrors: errors.array(),
     });
   }
+
+  const imageUrl = image.path;
   // * pass one argument only and it is a js object where we map different values that were defined in schema. (ORDER does NOT matter)
   const product = new Product({
     title,
@@ -100,7 +116,9 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 exports.postEditProduct = (req, res, next) => {
-  const { productId, title, imageUrl, price, description } = req.body;
+  const { productId, title, price, description } = req.body;
+  const image = req.file;
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).render('admin/edit-product', {
@@ -110,7 +128,6 @@ exports.postEditProduct = (req, res, next) => {
       hasError: true,
       product: {
         title,
-        imageUrl,
         price,
         description,
         _id: productId,
@@ -126,7 +143,7 @@ exports.postEditProduct = (req, res, next) => {
         return res.redirect('/');
       }
       product.title = title;
-      product.imageUrl = imageUrl;
+      if (image) product.imageUrl = image.path;
       product.price = price;
       product.description = description;
       return product.save().then(() => {

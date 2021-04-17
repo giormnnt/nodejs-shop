@@ -48,7 +48,6 @@ router.post(
       .isLength({ min: 3 })
       .withMessage('Title should have minimum of 3 characters')
       .trim(),
-    body('imageUrl').isURL().withMessage('Image URL is not a valid URL'),
     body('price').isFloat().withMessage('Price needs at least two decimals'),
     body('description')
       .isLength({ min: 5, max: 400 })
