@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const PDFDocument = require('pdfkit');
+
 const Product = require('../models/product');
 const Order = require('../models/order');
 
@@ -151,12 +153,20 @@ exports.getInvoice = (req, res, next) => {
       }
       const invoiceName = 'invoice-' + orderId + '.pdf';
       const invoicePath = path.join('data', 'invoices', invoiceName);
-      const file = fs.createReadStream(invoicePath);
+
+      const pdfDoc = new PDFDocument();
       res.setHeader('Content-Type', 'application/pdf');
       // * allows to define how this content should be served to the client
       res.setHeader('Content-Disposition', `inline; filename="${invoiceName}"`);
       // * forwards the data that is read in with that system to response
-      file.pipe(res);
+      pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      pdfDoc.pipe(res);
+
+      // * adds single line of text into the pdf document.
+      pdfDoc.text('Hello World');
+
+      // * writable streams for creating the file and for sending the response will be closed.
+      pdfDoc.end();
     })
     .catch(err => next(err));
 };
