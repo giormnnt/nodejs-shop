@@ -24,7 +24,7 @@ router.post(
     body('image'),
     body('price').isFloat().withMessage('Price needs at least two decimals'),
     body('description')
-      .isLength({ min: 5, max: 400 })
+      .isLength({ min: 3, max: 400 })
       .withMessage(
         'Description should have minumum of 3 characters and maximum of 400 characters only'
       )
