@@ -12,9 +12,6 @@ block content
             .form-control
                 label(for="title") Title
                 input#title(class=`${validationErrors.find(err => err.param === 'email') ? 'invalid': ''}`,type="text", name="title" value=`${ editing || hasError ? product.title : ''}`)
-            //- .form-control
-                label(for="imageUrl") Image URL
-                input#imageUrl(class=`${validationErrors.find(err => err.param === 'email') ? 'invalid': ''}`,type="text", name="imageUrl" value=`${ editing || hasError? product.imageUrl : ''}`)
             .form-control
                 label(for="image") Image
                 input#image(type="file", name="image")
