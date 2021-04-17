@@ -22,6 +22,20 @@ const store = new MongoDBStore({
 });
 const csrfProtection = csrf();
 
+// * diskStorage is a storage engine which you can use with multer.
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // * first argument is an error message to inform multer that something is wrong with the incoming file and should not store it. if it's null then it's OK to store it.
+    // * second argument is where to store it.
+    cb(null, 'images');
+  },
+  filename: (req, file, cb) => {
+    // * second argument is the file name that will use
+    // * this will not overwrite each other if there's two images with the same name.
+    cb(null, new Date().toISOString() + '-' + file.originalname);
+  },
+});
+
 app.set('view engine', 'pug');
 
 const adminRoutes = require('./routes/admin');
@@ -29,7 +43,7 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({ dest: 'images' }).single('image'));
+app.use(multer({ storage: fileStorage }).single('image'));
 app.use(express.static(path.join(__dirname, 'public')));
 // * secret is used for signing the hash which secretly stores ID in the cookie.
 // * resave means that the session will not be saved on every request that is done but only if there is something changed in the session.
