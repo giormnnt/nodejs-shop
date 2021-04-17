@@ -141,13 +141,15 @@ exports.postOrder = (req, res, next) => {
 
 exports.getInvoice = (req, res, next) => {
   const { orderId } = req.params;
-  console.log(orderId);
   const invoiceName = 'invoice-' + orderId + '.pdf';
   const invoicePath = path.join('data', 'invoices', invoiceName);
   fs.readFile(invoicePath, (err, data) => {
     if (err) {
       return next(err);
     }
+    res.setHeader('Content-Type', 'application/pdf');
+    // * allows to define how this content should be served to the client
+    res.setHeader('Content-Disposition', `inline; filename="${invoiceName}"`);
     res.send(data);
   });
 };
