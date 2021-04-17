@@ -12,8 +12,8 @@ block content
                     h1 Order# #{order._id }
                     ul.orders__products 
                         each p in order.products
-                            li.orders__products-item #{p.product.title} (#{p.quantity}) $#{p.product.price * p.quantity} 
-                            - total += (p.product.price * p.quantity)
+                            li.orders__products-item #{p.product.title} (#{p.quantity}) $#{p.product.price * p.quantity} #[a(href=`/orders/${order._id}`) Invoice] 
+                            - total += (p.product.price * p.quantity)                        
             h1 TOTAL
                 h3 $#{total}
     else 
