@@ -2,6 +2,9 @@ const fs = require('fs');
 const path = require('path');
 
 const PDFDocument = require('pdfkit');
+const stripe = require('stripe')(
+  'sk_test_51Ihg3sIxGR9ErIvojNUImJvnUnnKwoGHC8MWrK2TPcddy5XnyInNJfSMIfpSOLGUBMSuUQAI2HoqXalSnHdxjTo1009Kia08Nb'
+);
 
 const Product = require('../models/product');
 const Order = require('../models/order');
@@ -139,6 +142,77 @@ exports.getOrders = (req, res, next) => {
         path: '/orders',
         orders,
       });
+    })
+    .catch(err => {
+      error500(err, next);
+    });
+};
+
+exports.getCheckout = (req, res, next) => {
+  let products;
+  let total = 0;
+  req.user
+    .populate('cart.items.productId')
+    .execPopulate()
+    .then(user => {
+      products = user.cart.items;
+      total = 0;
+      products.forEach(p => {
+        total += p.quantity * p.productId.price;
+      });
+      // * creates stripe session
+      return stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: products.map(p => {
+          return {
+            name: p.productId.title,
+            description: p.productId.description,
+            amount: p.productId.price * 100,
+            currency: 'usd',
+            quantity: p.quantity,
+          };
+        }),
+        success_url: `${req.protocol}://${req.get('host')}/checkout/success`, // * => http://localhost:3000/checkout/success
+        cancel_url: `${req.protocol}://${req.get('host')}/checkout/cancel`, // * => http://localhost:3000/checkout/cancel
+      });
+    })
+    .then(session => {
+      res.render('shop/checkout', {
+        pageTitle: 'Checkout',
+        products,
+        total,
+        sessionId: session.id,
+      });
+    })
+    .catch(err => {
+      error500(err, next);
+    });
+};
+
+exports.getCheckoutSuccess = (req, res, next) => {
+  req.user
+    .populate('cart.items.productId')
+    .execPopulate()
+    .then(user => {
+      // * returns user.cart.items.quantity & user.cart.items.productId
+      const products = user.cart.items.map(item => {
+        // * ._doc access the data that's in there
+        return { quantity: item.quantity, product: { ...item.productId._doc } };
+      });
+      const order = new Order({
+        user: {
+          email: req.user.email,
+          userId: req.user,
+        },
+        products,
+      });
+      return order.save();
+    })
+    .then(() => {
+      return req.user.clearCart();
+    })
+    .then(() => {
+      res.redirect('/orders');
     })
     .catch(err => {
       error500(err, next);
