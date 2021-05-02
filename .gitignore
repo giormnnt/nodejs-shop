@@ -1,6 +1,5 @@
 node_modules
 .vscode
-images
 data/invoices
 server.cert
 server.key
