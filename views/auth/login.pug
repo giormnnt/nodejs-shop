@@ -8,7 +8,7 @@ block content
     main
         if errorMessage
             .user-message.user-message--error #{errorMessage}
-        form.login-form(action="/login", method="POST" novalidate)
+        form.login-form(action="/login", method="POST")
             .form-control
                 label(for="email") E-mail
                 input#email(class=`${validationErrors.find(err => err.param === 'email') ? 'invalid': ''}`,type="email", name="email" value=oldInput.email)   
